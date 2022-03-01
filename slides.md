@@ -30,8 +30,7 @@ marp: true
 
 ## `panic!`
 
-- unrecoverable error
-- or for "should never happen" scenarios
+- unrecoverable error or "should never happen" scenarios
 - exits program
   - unwinds the call stack
   - cleans up data

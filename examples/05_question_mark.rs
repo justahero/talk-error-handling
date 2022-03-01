@@ -1,8 +1,5 @@
-fn load_file(file_path: &str) -> std::io::Result<String> {
-    match std::fs::read_to_string(file_path) {
-        Ok(content) => Ok(content),
-        Err(err) => Err(err),
-    }
+fn load_file(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
+    Ok(std::fs::read_to_string(file_path)?)
 }
 
 fn main() {
