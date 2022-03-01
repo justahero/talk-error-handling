@@ -1,0 +1,9 @@
+[package]
+name = "error-examples"
+description = "A set of examples to show error handling in Rust"
+authors = ["Sebastian Ziebell <sebastian.ziebell@ferrous-systems.com>"]
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
