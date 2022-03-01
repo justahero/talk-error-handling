@@ -230,11 +230,55 @@ fn main() {
 }
 ```
 
-- 
+- maps one `Err` type to another
 
 ---
 
 ## Using `std::error::Error`
 
 ```rust
+// TODO
 ```
+
+---
+
+## In iterators
+
+```rust
+fn main() {
+    let list = vec!["1", "2", "a", "b", "3"];
+    let result = list
+        .iter()
+        .map(|&s| s.parse::<i32>())
+        .collect::<Vec<_>>();
+
+    println!("Result: {:?}", result);
+}
+```
+
+- `Vec<_>` expands to `Vec<Result<i32, ParseIntError>>`
+
+```shell
+Result: [Ok(1), Ok(2), Err(ParseIntError { kind: InvalidDigit }), Err(ParseIntError { kind: InvalidDigit }), Ok(3)]
+```
+
+- `map` closure prohibits to return with `Err` early
+- iterates over all items
+
+---
+
+## In iterators
+
+```rust
+fn main() {
+    let list = vec!["1", "2", "a", "b", "3"];
+    let result = list
+        .iter()
+        .map(|&s| s.parse::<i32>())
+        .collect::<Result<Vec<_>, _>>();
+
+    println!("Result: {:?}", result);
+}
+```
+
+- iteration immediately halts at first `Err`
