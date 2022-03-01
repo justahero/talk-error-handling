@@ -3,6 +3,23 @@ Rust Error Handling
 
 Presentation tool is [MARP](https://marp.app/#get-started), a markdown to slides framework.
 
+## Slides
+
+The slides are written in Markdown & compiled using the [marp](https://marp.app/) tooling. 
+
+First install the `marp` CLI for your system. On OSX use Homebrew
+
+```bash
+brew install marp-cli
+```
+
+
+To compile `slides.md` into the presentation run:
+
+```bash
+```
+
+
 ### References
 
 * https://doc.rust-lang.org/book/ch09-00-error-handling.html
