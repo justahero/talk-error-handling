@@ -1,13 +1,10 @@
-fn load_file(file_path: &str) -> std::io::Result<String> {
-    match std::fs::read_to_string(file_path) {
-        Ok(content) => Ok(content),
-        Err(err) => Err(err),
-    }
+fn parse_number(input: &str) -> Result<i32, std::num::ParseIntError> {
+    input.parse::<i32>()
 }
 
 fn main() {
-    match load_file("number.txt") {
-        Ok(content) => println!("File content is: {}", content),
-        Err(err) => println!("Failed to load file: {}", err),
+    match parse_number("10") {
+        Ok(number) => println!("Parsed number is: {}", number),
+        Err(err) => println!("Failed to parse number: {}", err),
     }
 }

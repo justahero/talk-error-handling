@@ -12,8 +12,10 @@ impl std::fmt::Display for MyError {
     }
 }
 
-fn parse_number(input: &str) -> Result<i32, MyError> {
-    input.parse::<i32>().map_err(|_| MyError::ParseFailed)
+impl std::error::Error for MyError {}
+
+fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
+    input.parse::<i32>().map_err(|_| Box::new(MyError::ParseFailed))
 }
 
 fn main() {

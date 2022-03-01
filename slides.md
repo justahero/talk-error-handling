@@ -30,7 +30,8 @@ marp: true
 
 ## `panic!`
 
-- unrecoverable error or "should never happen" scenarios
+- unrecoverable error
+- also for "should never happen" scenarios
 - exits program
   - unwinds the call stack
   - cleans up data
@@ -56,7 +57,7 @@ fn main() {
 
 ---
 
-## Result
+## Result Type
 
 ```rust
 pub enum Result<T, E> {
@@ -71,7 +72,7 @@ pub enum Result<T, E> {
 
 ---
 
-## Result Example
+## Explicit
 
 ```rust
 fn main() {
@@ -92,6 +93,73 @@ warning: unused `Result` that must be used
 
 ---
 
+## Using `match`
+
+```rust
+use std::num::ParseIntError;
+
+fn main() {
+    let input: Result<i32, ParseIntError> = "10".parse::<i32>();
+    match input {
+        Ok(value) => println!("Value is: {}", value),
+        Err(_) => println!("Failed to parse string."),
+    }
+}
+```
+
+- `parse` returns either `Ok(i32)` or `Err(ParseIntError)`
+
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=56eac5ffc22b9a23bf7b82b9abbaa2e5)
+
+---
+
+## `is_ok` & `is_err`
+
+```rust
+fn main() {
+    let input = "10";
+    if input.parse::<i32>().is_ok() {
+        println!("Input was a number");
+    }
+}
+```
+
+- `Result#is_ok` returns true when `Ok` variant
+- `Result#is_err` returns true when `Err` variant
+
+---
+
+## `Result#unwrap`
+
+```rust
+fn main() {
+    let x = "10".parse::<i32>().unwrap();
+    println!("x is: {}", x);
+}
+```
+
+- panics when `Result` is `Err` variant
+- limited diagnostics
+- better to avoid in code
+
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=56d90b0c6c5dbf018d3f4fcaa51543df)
+
+---
+
+## `Result#expect`
+
+```rust
+fn main() {
+    let url = std::env::var("DATABASE_URL").expect("Env var 'DATABASE_URL' unset.");
+    println!("DATABASE_URL: {}", url);
+}
+```
+
+- panics when `Result` is `Err` variant
+- slightly better than `unwrap`
+
+---
+
 ## `std::error::Error` trait
 
 ```rust
@@ -101,6 +169,9 @@ pub trait Error: Debug + Display {
 ```
 
 - generic trait to display error
+- rule of thumb
+  - `Debug` to provide info for developers
+  - `Display` to show error to user
 
 ---
 
@@ -108,16 +179,14 @@ pub trait Error: Debug + Display {
 
 ```rust
 #[derive(Debug)]
-enum CustomError {
+enum MyError {
     ParseFailed,
-    FileNotLoaded,
 }
 
 impl std::fmt::Display for MyError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             MyError::ParseFailed => "Failed to parse number.",
-            MyError::FileNotLoaded => "Failed to load file.",
         };
         write!(f, "{}", s)
     }
@@ -126,5 +195,46 @@ impl std::fmt::Display for MyError {
 
 ---
 
-## Custom Error type
+## Custom Error Example
 
+```rust
+fn parse_number(input: &str) -> Result<i32, MyError> {
+    match input.parse::<i32>() {
+        Ok(value) => Ok(value),
+        Err(_) => Err(MyError::ParseFailed),
+    }
+}
+
+fn main() {
+    match parse_number("10") {
+        Ok(number) => println!("Parsed number is: {}", number),
+        Err(err) => println!("Failed to parse number: {}", err),
+    }
+}
+```
+
+---
+
+## Using `map_err`
+
+```rust
+fn parse_number(input: &str) -> Result<i32, MyError> {
+    input.parse::<i32>().map_err(|_| MyError::ParseFailed)
+}
+
+fn main() {
+    match parse_number("10") {
+        Ok(number) => println!("Parsed number is: {}", number),
+        Err(err) => println!("{}", err),
+    }
+}
+```
+
+- 
+
+---
+
+## Using `std::error::Error`
+
+```rust
+```

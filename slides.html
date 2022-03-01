@@ -14,7 +14,7 @@
 h6 {
   font-size: 30%;
 }
-" class="lead" data-marpit-pagination="1" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--class:lead;--theme:gaia;--style:section.lead h1 {
+" class="lead" data-marpit-pagination="1" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--class:lead;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
@@ -30,7 +30,7 @@ h6 {
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="2" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="2" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
@@ -51,7 +51,7 @@ h6 {
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="3" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="3" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
@@ -60,7 +60,8 @@ h6 {
 ;background-color:#eee;background-image:none;">
 <h2><code>panic!</code></h2>
 <ul>
-<li>unrecoverable error or &quot;should never happen&quot; scenarios</li>
+<li>unrecoverable error</li>
+<li>also for &quot;should never happen&quot; scenarios</li>
 <li>exits program
 <ul>
 <li>unwinds the call stack</li>
@@ -75,7 +76,7 @@ h6 {
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="4" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="4" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
@@ -103,14 +104,14 @@ h6 {
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="5" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="5" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
   font-size: 30%;
 }
 ;background-color:#eee;background-image:none;">
-<h2>Result</h2>
+<h2>Result Type</h2>
 <pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">pub</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">Result</span></span>&lt;T, E&gt; {
     <span class="hljs-literal">Ok</span>(T),
     <span class="hljs-literal">Err</span>(E),
@@ -128,14 +129,14 @@ h6 {
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="6" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="6" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
   font-size: 30%;
 }
 ;background-color:#eee;background-image:none;">
-<h2>Result Example</h2>
+<h2>Explicit</h2>
 <pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() {
     <span class="hljs-string">&quot;10&quot;</span>.parse::&lt;<span class="hljs-built_in">i32</span>&gt;();
 }
@@ -155,7 +156,112 @@ h6 {
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="7" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="7" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+;background-color:#eee;background-image:none;">
+<h2>Using <code>match</code></h2>
+<pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">use</span> std::num::ParseIntError;
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() {
+    <span class="hljs-keyword">let</span> input: <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">i32</span>, ParseIntError&gt; = <span class="hljs-string">&quot;10&quot;</span>.parse::&lt;<span class="hljs-built_in">i32</span>&gt;();
+    <span class="hljs-keyword">match</span> input {
+        <span class="hljs-literal">Ok</span>(value) =&gt; <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Value is: {}&quot;</span>, value),
+        <span class="hljs-literal">Err</span>(_) =&gt; <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Failed to parse string.&quot;</span>),
+    }
+}
+</span></span></foreignObject></svg></code></pre>
+<ul>
+<li><code>parse</code> returns either <code>Ok(i32)</code> or <code>Err(ParseIntError)</code></li>
+</ul>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=56eac5ffc22b9a23bf7b82b9abbaa2e5"><img class="emoji" draggable="false" alt="▶️" src="https://twemoji.maxcdn.com/2/svg/25b6.svg" data-marp-twemoji=""/></a></p>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="8" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+" data-marpit-pagination="8" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+;background-color:#eee;background-image:none;">
+<h2><code>is_ok</code> &amp; <code>is_err</code></h2>
+<pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() {
+    <span class="hljs-keyword">let</span> input = <span class="hljs-string">&quot;10&quot;</span>;
+    <span class="hljs-keyword">if</span> input.parse::&lt;<span class="hljs-built_in">i32</span>&gt;().is_ok() {
+        <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Input was a number&quot;</span>);
+    }
+}
+</span></span></foreignObject></svg></code></pre>
+<ul>
+<li><code>Result#is_ok</code> returns true when <code>Ok</code> variant</li>
+<li><code>Result#is_err</code> returns true when <code>Err</code> variant</li>
+</ul>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="9" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+" data-marpit-pagination="9" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+;background-color:#eee;background-image:none;">
+<h2><code>Result#unwrap</code></h2>
+<pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() {
+    <span class="hljs-keyword">let</span> x = <span class="hljs-string">&quot;10&quot;</span>.parse::&lt;<span class="hljs-built_in">i32</span>&gt;().unwrap();
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;x is: {}&quot;</span>, x);
+}
+</span></span></foreignObject></svg></code></pre>
+<ul>
+<li>panics when <code>Result</code> is <code>Err</code> variant</li>
+<li>limited diagnostics</li>
+<li>better to avoid in code</li>
+</ul>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=56d90b0c6c5dbf018d3f4fcaa51543df"><img class="emoji" draggable="false" alt="▶️" src="https://twemoji.maxcdn.com/2/svg/25b6.svg" data-marp-twemoji=""/></a></p>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+" data-marpit-pagination="10" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+;background-color:#eee;background-image:none;">
+<h2><code>Result#expect</code></h2>
+<pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() {
+    <span class="hljs-keyword">let</span> url = std::env::var(<span class="hljs-string">&quot;DATABASE_URL&quot;</span>).expect(<span class="hljs-string">&quot;Env var &#x27;DATABASE_URL&#x27; unset.&quot;</span>);
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;DATABASE_URL: {}&quot;</span>, url);
+}
+</span></span></foreignObject></svg></code></pre>
+<ul>
+<li>panics when <code>Result</code> is <code>Err</code> variant</li>
+<li>slightly better than <code>unwrap</code></li>
+</ul>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="11" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+" data-marpit-pagination="11" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
@@ -169,15 +275,21 @@ h6 {
 </span></span></foreignObject></svg></code></pre>
 <ul>
 <li>generic trait to display error</li>
+<li>rule of thumb
+<ul>
+<li><code>Debug</code> to provide info for developers</li>
+<li><code>Display</code> to show error to user</li>
+</ul>
+</li>
 </ul>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="8" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="12" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
   text-align: center;
 }
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="8" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="12" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
@@ -186,36 +298,93 @@ h6 {
 ;background-color:#eee;background-image:none;">
 <h2>Custom Error type</h2>
 <pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-meta">#[derive(Debug)]</span>
-<span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">CustomError</span></span> {
+<span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">MyError</span></span> {
     ParseFailed,
-    FileNotLoaded,
 }
 
 <span class="hljs-keyword">impl</span> std::fmt::Display <span class="hljs-keyword">for</span> MyError {
     <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">fmt</span></span>(&amp;<span class="hljs-keyword">self</span>, f: &amp;<span class="hljs-keyword">mut</span> std::fmt::Formatter&lt;<span class="hljs-symbol">&#x27;_</span>&gt;) -&gt; std::fmt::<span class="hljs-built_in">Result</span> {
         <span class="hljs-keyword">let</span> s = <span class="hljs-keyword">match</span> <span class="hljs-keyword">self</span> {
             MyError::ParseFailed =&gt; <span class="hljs-string">&quot;Failed to parse number.&quot;</span>,
-            MyError::FileNotLoaded =&gt; <span class="hljs-string">&quot;Failed to load file.&quot;</span>,
         };
         <span class="hljs-built_in">write!</span>(f, <span class="hljs-string">&quot;{}&quot;</span>, s)
     }
 }
 </span></span></foreignObject></svg></code></pre>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="9" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="13" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
   text-align: center;
 }
 h6 {
   font-size: 30%;
 }
-" data-marpit-pagination="9" data-marpit-pagination-total="9" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+" data-marpit-pagination="13" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
   text-align: center;
 }
 h6 {
   font-size: 30%;
 }
 ;background-color:#eee;background-image:none;">
-<h2>Custom Error type</h2>
+<h2>Custom Error Example</h2>
+<pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">parse_number</span></span>(input: &amp;<span class="hljs-built_in">str</span>) -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">i32</span>, MyError&gt; {
+    <span class="hljs-keyword">match</span> input.parse::&lt;<span class="hljs-built_in">i32</span>&gt;() {
+        <span class="hljs-literal">Ok</span>(value) =&gt; <span class="hljs-literal">Ok</span>(value),
+        <span class="hljs-literal">Err</span>(_) =&gt; <span class="hljs-literal">Err</span>(MyError::ParseFailed),
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() {
+    <span class="hljs-keyword">match</span> parse_number(<span class="hljs-string">&quot;10&quot;</span>) {
+        <span class="hljs-literal">Ok</span>(number) =&gt; <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Parsed number is: {}&quot;</span>, number),
+        <span class="hljs-literal">Err</span>(err) =&gt; <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Failed to parse number: {}&quot;</span>, err),
+    }
+}
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="14" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+" data-marpit-pagination="14" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+;background-color:#eee;background-image:none;">
+<h2>Using <code>map_err</code></h2>
+<pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">parse_number</span></span>(input: &amp;<span class="hljs-built_in">str</span>) -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">i32</span>, MyError&gt; {
+    input.parse::&lt;<span class="hljs-built_in">i32</span>&gt;().map_err(|_| MyError::ParseFailed)
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() {
+    <span class="hljs-keyword">match</span> parse_number(<span class="hljs-string">&quot;10&quot;</span>) {
+        <span class="hljs-literal">Ok</span>(number) =&gt; <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Parsed number is: {}&quot;</span>, number),
+        <span class="hljs-literal">Err</span>(err) =&gt; <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;{}&quot;</span>, err),
+    }
+}
+</span></span></foreignObject></svg></code></pre>
+<ul>
+<li></li>
+</ul>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="15" data-paginate="true" data-background-color="#eee" data-theme="gaia" data-style="section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+" data-marpit-pagination="15" data-marpit-pagination-total="15" style="--paginate:true;--background-color:#eee;--theme:gaia;--style:section.lead h1 {
+  text-align: center;
+}
+h6 {
+  font-size: 30%;
+}
+;background-color:#eee;background-image:none;">
+<h2>Using <code>std::error::Error</code></h2>
+<pre><code class="language-rust"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap></span></span></foreignObject></svg></code></pre>
 </section>
 <script>!function(){"use strict";const t="marpitSVGPolyfill:setZoomFactor,",e=Symbol();let r,o;function n(n){const i="object"==typeof n&&n.target||document,a="object"==typeof n?n.zoom:n;window[e]||(Object.defineProperty(window,e,{configurable:!0,value:!0}),window.addEventListener("message",(({data:e,origin:r})=>{if(r===window.origin)try{if(e&&"string"==typeof e&&e.startsWith(t)){const[,t]=e.split(","),r=Number.parseFloat(t);Number.isNaN(r)||(o=r)}}catch(t){console.error(t)}})));let l=!1;Array.from(i.querySelectorAll("svg[data-marpit-svg]"),(t=>{var e,n,i,s;t.style.transform||(t.style.transform="translateZ(0)");const c=a||o||t.currentScale||1;r!==c&&(r=c,l=c);const d=t.getBoundingClientRect(),{length:u}=t.children;for(let r=0;r<u;r+=1){const o=t.children[r],a=o.getScreenCTM();if(a){const t=null!==(n=null===(e=o.x)||void 0===e?void 0:e.baseVal.value)&&void 0!==n?n:0,r=null!==(s=null===(i=o.y)||void 0===i?void 0:i.baseVal.value)&&void 0!==s?s:0,l=o.firstElementChild,{style:u}=l;u.transformOrigin||(u.transformOrigin=`${-t}px ${-r}px`),u.transform=`scale(${c}) matrix(${a.a}, ${a.b}, ${a.c}, ${a.d}, ${a.e-d.left}, ${a.f-d.top}) translateZ(0.0001px)`}}})),!1!==l&&Array.from(i.querySelectorAll("iframe"),(({contentWindow:e})=>{null==e||e.postMessage(`${t}${l}`,"null"===window.origin?"*":window.origin)}))}r=1,o=void 0;const i=(t,e,r)=>{if(t.getAttribute(e)!==r)return t.setAttribute(e,r),!0};function a({once:t=!1,target:e=document}={}){const r="Apple Computer, Inc."===navigator.vendor?[n]:[];let o=!t;const a=()=>{for(const t of r)t({target:e});!function(t=document){Array.from(t.querySelectorAll('svg[data-marp-fitting="svg"]'),(t=>{var e;const r=t.firstChild,o=r.firstChild,{scrollWidth:n,scrollHeight:a}=o;let l,s=1;if(t.hasAttribute("data-marp-fitting-code")&&(l=null===(e=t.parentElement)||void 0===e?void 0:e.parentElement),t.hasAttribute("data-marp-fitting-math")&&(l=t.parentElement),l){const t=getComputedStyle(l),e=Math.ceil(l.clientWidth-parseFloat(t.paddingLeft||"0")-parseFloat(t.paddingRight||"0"));e&&(s=e)}const c=Math.max(n,s),d=Math.max(a,1),u=`0 0 ${c} ${d}`;i(r,"width",`${c}`),i(r,"height",`${d}`),i(t,"preserveAspectRatio",getComputedStyle(t).getPropertyValue("--preserve-aspect-ratio")||"xMinYMin meet"),i(t,"viewBox",u)&&t.classList.toggle("__reflow__")}))}(e),o&&window.requestAnimationFrame(a)};return a(),()=>{o=!1}}const l=Symbol(),s=document.currentScript;((t=document)=>{if("undefined"==typeof window)throw new Error("Marp Core's browser script is valid only in browser context.");if(t[l])return t[l];const e=a({target:t}),r=()=>{e(),delete t[l]};Object.defineProperty(t,l,{configurable:!0,value:r})})(s?s.getRootNode():document)}();
 </script></foreignObject></svg></div><script>/*!! License: https://unpkg.com/@marp-team/marp-cli@1.7.0/lib/bespoke.js.LICENSE.txt */
