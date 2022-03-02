@@ -28,21 +28,22 @@ marp: true
 
 # Errors
 
-- recoverable vs unrecoverable
-- explicit handling
-- no exceptions
-- vs Java, Ruby, Python, C++, JavaScript etc
+* recoverable vs unrecoverable
+* must be explicitly handled
+* transparent error propagation
+* vs Java, Ruby, Python, C++, JavaScript etc
 
 ---
 
 # Error Handling
 
-- to prevent invalid, undefined or unrecoverable program state
-- to provide users sufficient information
-  - e.g. `400 Bad Request`, required CLI argument missing
-- to provide developers & operators sufficient context
-  - e.g. `503 Sercice Unavailabe`, env var `'XYZ'` unset
-  - useful to aggregate logs / traces
+* to prevent invalid, undefined or unrecoverable program state
+* to recover in an automated way
+* to provide users sufficient information
+  * e.g. `400 Bad Request`, required CLI argument missing
+* to provide developers & operators sufficient context
+  * e.g. `503 Sercice Unavailabe`, env var `'XYZ'` unset
+  * useful to aggregate logs / traces
 
 ---
 
@@ -182,10 +183,10 @@ fn main() {
 
 # Error Types
 
-- Layered error handling is complex, e.g. application vs crate level
-- Rust errors, e.g. `std::io::Error`, `std::num::ParseIntError`
-- Domain & crate errors, e.g. `400 Bad Request`, `sqlx::Error`
-- Often requires error conversion
+* Layered error handling is complex, e.g. application vs crate level
+* Rust errors, e.g. `std::io::Error`, `std::num::ParseIntError`
+* Domain & crate errors, e.g. `400 Bad Request`, `sqlx::Error`
+* Often requires error conversion
 
 ---
 
@@ -247,8 +248,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-- both `Err` types implement `Error` trait
-- `main` can return `Result`
+- `main` can also return `Result` [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=7c95373998861190ed3624cb8a68d0dd)
 
 ---
 
@@ -335,8 +335,7 @@ fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
 }
 
 fn main() {
-    let result = parse_number("10");
-    println!("Result is: {:?}", result);
+    println!("Result is: {:?}", parse_number("10"));
 }
 ```
 
@@ -375,12 +374,9 @@ fn main() {
 }
 ```
 
-```shell
-Result: [Ok(1), Ok(2), Err(ParseIntError { kind: InvalidDigit }), Err(ParseIntError { kind: InvalidDigit }), Ok(3)]
-```
-
 - `Vec<_>` expands to `Vec<Result<i32, ParseIntError>>`
 - closure in `map` prohibits to return with `Err` early
+- iterates over all items
 
 [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=f47c1c0a616155357b8bbdc09c9a39f4)
 
@@ -404,7 +400,7 @@ fn main() {
 
 ---
 
-## Related Crates
+## Useful Crates
 
 - [anyhow](https://github.com/dtolnay/anyhow) to provide an opaque error type
 - [thiserror](https://crates.io/crates/thiserror) provides macros to reduce boilerplate code
@@ -430,5 +426,3 @@ fn main() {
 <!-- _class: lead -->
 
 # **Thank You :)**
-
----
