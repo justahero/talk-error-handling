@@ -29,4 +29,3 @@ marp -w slides.md
 * https://www.sheshbabu.com/posts/rust-error-handling/
 * https://kerkour.com/rust-error-handling
 * https://www.unwoundstack.com/blog/rust-error-handling.html
-

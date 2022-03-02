@@ -35,6 +35,7 @@ marp: true
 - exits program
   - unwinds the call stack
   - cleans up data
+- other macros `todo!`, `unimplemented!`, `unreachable!`
 
 ---
 
@@ -195,7 +196,7 @@ fn main() {
 }
 ```
 
-- implement `parse_number` to make the code work
+- [implement `parse_number` ▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=c1070dfc7bba26930e866ad67a103ae7)
 
 ---
 
