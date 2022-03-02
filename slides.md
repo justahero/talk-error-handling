@@ -35,6 +35,17 @@ marp: true
 
 ---
 
+# Goals
+
+- to prevent invalid, undefined or unrecoverable program state
+- to provide users with sufficient information
+  - e.g. `400 Bad Request`, required CLI argument missing
+- to provide developers & operators enough context
+  - e.g. `503 Sercice Unavailabe`, env var `X` unset
+  - aggregate logs / traces externally
+
+---
+
 ## `panic!`
 
 - unrecoverable error
@@ -65,7 +76,7 @@ fn main() {
 
 ---
 
-## Result Type
+## `Result` Type
 
 ```rust
 pub enum Result<T, E> {
