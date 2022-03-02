@@ -139,8 +139,8 @@ fn main() {
 ```
 
 - panics when `Result` is `Err` variant
-- limited diagnostics
-- better to avoid in code
+- very limited diagnostics
+- useful in some limited capacity, e.g. tests
 
 [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=56d90b0c6c5dbf018d3f4fcaa51543df)
 
@@ -157,21 +157,6 @@ fn main() {
 
 - panics when `Result` is `Err` variant
 - slightly better than `unwrap`
-
----
-
-## `std::error::Error` trait
-
-```rust
-pub trait Error: Debug + Display {
-    // ...
-}
-```
-
-- generic trait to display error
-- rule of thumb
-  - `Debug` to provide info for developers
-  - `Display` to show error to user
 
 ---
 
@@ -195,14 +180,11 @@ impl std::fmt::Display for MyError {
 
 ---
 
-## Custom Error Example
+## Custom Error Exercise
 
 ```rust
 fn parse_number(input: &str) -> Result<i32, MyError> {
-    match input.parse::<i32>() {
-        Ok(value) => Ok(value),
-        Err(_) => Err(MyError::ParseFailed),
-    }
+    // TODO parse input, return number or suitable error variant
 }
 
 fn main() {
@@ -212,6 +194,8 @@ fn main() {
     }
 }
 ```
+
+- implement `parse_number` to make the code work
 
 ---
 
@@ -234,11 +218,34 @@ fn main() {
 
 ---
 
+## `std::error::Error` trait
+
+```rust
+pub trait Error: Debug + Display {
+    // ...
+}
+```
+
+- generic trait to display error
+- useful to provide specific diagnostics
+  - for developers (`Debug`)
+  - for users (`Display`)
+
+---
+
 ## Using `std::error::Error`
 
 ```rust
 // TODO
 ```
+
+---
+
+## Error conversion
+
+---
+
+## Exercise
 
 ---
 
