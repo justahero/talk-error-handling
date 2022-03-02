@@ -14,13 +14,13 @@ brew install marp-cli
 ```
 
 
-To compile `slides.md` into the presentation run:
+To compile & watch `slides.md` into the presentation run:
 
 ```bash
+marp -w slides.md
 ```
 
-
-### References
+## References
 
 * https://doc.rust-lang.org/book/ch09-00-error-handling.html
 * https://nick.groenen.me/posts/rust-error-handling/
@@ -30,27 +30,3 @@ To compile `slides.md` into the presentation run:
 * https://kerkour.com/rust-error-handling
 * https://www.unwoundstack.com/blog/rust-error-handling.html
 
-## Topics
-
-Error handling in Rust
-
-* excluding compile errors
-* Option (Some & None), Result (Ok, Err)
-* panic!
-
-
-* recoverable / unrecoverable errors
-  * recoverable, program may handle error then continue
-  * unrecoverable, program immediately exits
-
-
-* Result (Ok, Err) cannot be ignored, has to be explicitly handled!
-* compared with other languages
-  * for example Java, Ruby, Python C++ exception handling not explicit, try / catch
-  * Java allowed to annotate methods with possible exceptions (optional)
-
-
-More error handling topics
-
-* anyhow, thiserror, tracing
-* miette (https://lib.rs/crates/miette)
