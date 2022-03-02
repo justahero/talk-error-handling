@@ -10,8 +10,8 @@ style: |
   h6 {
     font-size: 30%;
   }
-  code.rust, code.shell {
-    font-size: 18px;
+  code.language-rust, code.language-shell {
+    font-size: 24px;
   }
 marp: true
 ---
@@ -31,18 +31,18 @@ marp: true
 - recoverable vs unrecoverable
 - explicit handling
 - no exceptions
-- vs Java, Ruby, Python, C++
+- vs Java, Ruby, Python, C++, JavaScript etc
 
 ---
 
 # Error Handling
 
 - to prevent invalid, undefined or unrecoverable program state
-- to provide users with sufficient information
+- to provide users sufficient information
   - e.g. `400 Bad Request`, required CLI argument missing
 - to provide developers & operators sufficient context
-  - e.g. `503 Sercice Unavailabe`, env var `X` unset
-  - aggregate logs / traces externally
+  - e.g. `503 Sercice Unavailabe`, env var `'XYZ'` unset
+  - useful to aggregate logs / traces
 
 ---
 
@@ -167,7 +167,8 @@ fn main() {
 
 ```rust
 fn main() {
-    let url = std::env::var("DATABASE_URL").expect("Env var 'DATABASE_URL' unset.");
+    let url = std::env::var("DATABASE_URL")
+        .expect("Env var 'DATABASE_URL' unset.");
     println!("DATABASE_URL: {}", url);
 }
 ```
@@ -175,14 +176,31 @@ fn main() {
 - panics when `Result` is `Err` variant
 - slightly better diagnostics
 
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=558e3a4412d8033c00e5cd6bb1ad21af)
+
 ---
 
 # Error Types
 
-- Layered error handling is complex, e.g. application vs crate
+- Layered error handling is complex, e.g. application vs crate level
 - Rust errors, e.g. `std::io::Error`, `std::num::ParseIntError`
 - Domain & crate errors, e.g. `400 Bad Request`, `sqlx::Error`
-- Often requires some form of error conversion
+- Often requires error conversion
+
+---
+
+## The `std::error::Error` Trait
+
+```rust
+pub trait Error: Debug + Display {
+    // ...
+}
+```
+
+- generic trait to represent errors
+- useful to provide diagnostics
+  - for developers & operators (`Debug`)
+  - for users (`Display`)
 
 ---
 
@@ -208,42 +226,29 @@ fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
 ```
 
 - `?` operator applies conversion using `Into<Error>`
-- `Err` type needs to implement `std::error::Error` trait
+- `Err` type implements `std::error::Error` trait
+
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=973ff56797f9e0149c32e721d2d7a1e3)
 
 ---
 
-## The `std::error::Error` Trait
+## Dynamic Error
 
 ```rust
-pub trait Error: Debug + Display {
-    // ...
+fn parse_from_file(file_path: &str) -> Result<i32, Box<dyn std::error::Error>> {
+    let content = std::fs::read_to_string(file_path)?;
+    let number = content.parse::<i32>()?;
+    Ok(number)
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Number in file is: {}", parse_from_file("number.txt")?);
+    Ok(())
 }
 ```
 
-- generic trait to represent errors
-- useful to provide specific diagnostics
-  - for developers & operators (`Debug`)
-  - for users (`Display`)
-
----
-
-## Using `std::error::Error`
-
-```rust
-#[derive(Debug)]
-enum MyError {
-    ParseFailed,
-}
-
-impl std::fmt::Display for MyError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            MyError::ParseFailed => "Failed to parse number.",
-        };
-        write!(f, "{}", s)
-    }
-}
-```
+- both `Err` types implement `Error` trait
+- `main` can return `Result`
 
 ---
 
@@ -253,8 +258,13 @@ impl std::fmt::Display for MyError {
 #[derive(Debug)]
 enum MyError {
     ParseFailed,
+    PathNotFound(String),
+    Generic { reason: String }
 }
 ```
+
+- allows granularity
+- rule of thumb: each variant represents one error case
 
 ---
 
@@ -277,7 +287,13 @@ fn main() {
 
 ---
 
-## Using `map_err`
+<style scoped>
+code.language-rust {
+    font-size: 22px;
+}
+</style>
+
+## Using `map_err` 
 
 ```rust
 fn parse_number(input: &str) -> Result<i32, MyError> {
@@ -294,15 +310,17 @@ fn main() {
 
 - maps one `Err` type to another error type
 
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=4b14efaa5c7544481ba2b0aa0da82cf0)
+
 ---
 
 <style scoped>
-code.rust {
-    font-size: 20px;
+code.language-rust {
+    font-size: 18px;
 }
 </style>
 
-## Using `From` Conversion
+## Using `From` Exercise
 
 ```rust
 #[derive(Debug)]
@@ -310,14 +328,7 @@ enum MyError {
     ParseFailed,
 }
 
-impl std::fmt::Display for MyError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            MyError::ParseFailed => "Failed to parse number.",
-        };
-        write!(f, "{}", s)
-    }
-}
+impl std::fmt::Display for MyError { /* */ }
 
 fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
     Ok(input.parse::<i32>().map_err(|_| MyError::ParseFailed)?)
@@ -329,50 +340,84 @@ fn main() {
 }
 ```
 
-
+- [Run the example & fix it ▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=6b30093ab2af2451d74fec935797623b)
 
 ---
 
-## In iterators
+## Type Aliases
+
+```rust
+type MyResult<T> = std::result::Result<T, MyError>
+
+fn load_file(file_path: &str) -> MyResult<String> { /* */ }
+```
+
+- `io::Result` in Rust (std)
+- can reduce repetition
+
+---
+
+<style scoped>
+code.language-rust {
+    font-size: 20px;
+}
+</style>
+
+## Bonus: In iterators
 
 ```rust
 fn main() {
-    let list = vec!["1", "2", "a", "b", "3"];
-    let result = list
+    let result = vec!["1", "2", "a", "b", "3"]
         .iter()
         .map(|&s| s.parse::<i32>())
         .collect::<Vec<_>>();
-
     println!("Result: {:?}", result);
 }
 ```
-
-- `Vec<_>` expands to `Vec<Result<i32, ParseIntError>>`
 
 ```shell
 Result: [Ok(1), Ok(2), Err(ParseIntError { kind: InvalidDigit }), Err(ParseIntError { kind: InvalidDigit }), Ok(3)]
 ```
 
-- `map` closure prohibits to return with `Err` early
-- iterates over all items
+- `Vec<_>` expands to `Vec<Result<i32, ParseIntError>>`
+- closure in `map` prohibits to return with `Err` early
+
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=f47c1c0a616155357b8bbdc09c9a39f4)
 
 ---
 
-## In iterators
+## Bonus: In iterators
 
 ```rust
 fn main() {
-    let list = vec!["1", "2", "a", "b", "3"];
-    let result = list
+    let result = vec!["1", "2", "a", "b", "3"]
         .iter()
         .map(|&s| s.parse::<i32>())
         .collect::<Result<Vec<_>, _>>();
-
     println!("Result: {:?}", result);
 }
 ```
 
 - iteration immediately halts at first `Err`
+
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=1acda33948d8118c442d831fd4a59d90)
+
+---
+
+## Related Crates
+
+- [anyhow](https://github.com/dtolnay/anyhow) to provide an opaque error type
+- [thiserror](https://crates.io/crates/thiserror) provides macros to reduce boilerplate code
+- [tracing](https://docs.rs/tracing/latest/tracing/) framework to collect structured diagnostics
+
+---
+
+## References
+
+- [Error Handling in Rust](https://www.youtube.com/watch?v=jpVzSse7oJ4) by Luca Palmieri
+- [Rust Error Handling](https://fettblog.eu/rust-error-handling/) by Stefan Baumgartner
+- [Error Handling in Rust By Example](https://doc.rust-lang.org/rust-by-example/error.html)
+- [Rust: Structuring and handling errors in 2020](https://nick.groenen.me/posts/rust-error-handling/) by Nick Groenen
 
 ---
 
@@ -387,4 +432,3 @@ fn main() {
 # **Thank You :)**
 
 ---
-

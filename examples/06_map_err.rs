@@ -17,7 +17,7 @@ fn parse_number(input: &str) -> Result<i32, MyError> {
 }
 
 fn main() {
-    match parse_number("a") {
+    match parse_number("10") {
         Ok(number) => println!("Parsed number is: {}", number),
         Err(err) => println!("{}", err),
     }
