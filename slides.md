@@ -10,12 +10,19 @@ style: |
   h6 {
     font-size: 30%;
   }
+  code.rust, code.shell {
+    font-size: 18px;
+  }
 marp: true
 ---
 
 # **Error Handling in Rust**
 
 ### An Introduction
+
+<!-- ---
+
+# What is an Error? -->
 
 ---
 
@@ -81,7 +88,7 @@ fn main() {
 }
 ```
 
-```bash
+```shell
 warning: unused `Result` that must be used
  --> src/main.rs:2:5
   |
@@ -97,8 +104,6 @@ warning: unused `Result` that must be used
 ## Using `match`
 
 ```rust
-use std::num::ParseIntError;
-
 fn main() {
     let input: Result<i32, ParseIntError> = "10".parse::<i32>();
     match input {
@@ -157,25 +162,25 @@ fn main() {
 ```
 
 - panics when `Result` is `Err` variant
-- slightly better than `unwrap`
+- slightly better diagnostics
 
 ---
 
-## Custom Error type
+# Error Types
+
+- Layered error handling is complex, e.g. application vs crate
+- Rust errors, e.g. `std::io::Error`, `std::num::ParseIntError`
+- Domain & crate errors, e.g. `400 Bad Request`, `sqlx::Error`
+- Often requires some form of error conversion
+
+---
+
+## Custom Error Types
 
 ```rust
 #[derive(Debug)]
 enum MyError {
     ParseFailed,
-}
-
-impl std::fmt::Display for MyError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            MyError::ParseFailed => "Failed to parse number.",
-        };
-        write!(f, "{}", s)
-    }
 }
 ```
 
@@ -215,7 +220,7 @@ fn main() {
 }
 ```
 
-- maps one `Err` type to another
+- maps one `Err` type to another error type
 
 ---
 
@@ -227,9 +232,9 @@ pub trait Error: Debug + Display {
 }
 ```
 
-- generic trait to display error
+- generic trait to display errors
 - useful to provide specific diagnostics
-  - for developers (`Debug`)
+  - for developers & operators (`Debug`)
   - for users (`Display`)
 
 ---
@@ -237,7 +242,21 @@ pub trait Error: Debug + Display {
 ## Using `std::error::Error`
 
 ```rust
-// TODO
+#[derive(Debug)]
+enum MyError {
+    ParseFailed,
+}
+
+impl std::error::Error for MyError { /* */ }
+
+impl std::fmt::Display for MyError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            MyError::ParseFailed => "Failed to parse number.",
+        };
+        write!(f, "{}", s)
+    }
+}
 ```
 
 ---
@@ -290,3 +309,18 @@ fn main() {
 ```
 
 - iteration immediately halts at first `Err`
+
+---
+
+<!-- _class: lead -->
+
+# **Questions?**
+
+---
+
+<!-- _class: lead -->
+
+# **Thank You :)**
+
+---
+
