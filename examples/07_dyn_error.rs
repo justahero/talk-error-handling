@@ -12,15 +12,13 @@ impl std::fmt::Display for MyError {
     }
 }
 
-impl std::error::Error for MyError {}
+// impl std::error::Error for MyError {}
 
 fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
-    input.parse::<i32>().map_err(|_| Box::new(MyError::ParseFailed))
+    Ok(input.parse::<i32>().map_err(|_| MyError::ParseFailed)?)
 }
 
 fn main() {
-    match parse_number("a") {
-        Ok(number) => println!("Parsed number is: {}", number),
-        Err(err) => println!("{}", err),
-    }
+    let result = parse_number("10");
+    println!("Result is: {:?}", result);
 }

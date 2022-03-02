@@ -35,12 +35,12 @@ marp: true
 
 ---
 
-# Goals
+# Error Handling
 
 - to prevent invalid, undefined or unrecoverable program state
 - to provide users with sufficient information
   - e.g. `400 Bad Request`, required CLI argument missing
-- to provide developers & operators enough context
+- to provide developers & operators sufficient context
   - e.g. `503 Sercice Unavailabe`, env var `X` unset
   - aggregate logs / traces externally
 
@@ -49,7 +49,7 @@ marp: true
 ## `panic!`
 
 - unrecoverable error
-- also for "should never happen" scenarios
+- or for "should never happen" scenarios
 - exits program
   - unwinds the call stack
   - cleans up data
@@ -186,6 +186,67 @@ fn main() {
 
 ---
 
+## Dynamic Error
+
+```rust
+fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
+    input.parse::<i32>().map_err(|err| From::from(err))
+}
+```
+
+- `ParseIntError` implements `Error` trait
+- equivalent is `err.into()`
+
+---
+
+## Dynamic Error
+
+```rust
+fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
+    Ok(input.parse::<i32>()?)
+}
+```
+
+- `?` operator applies conversion using `Into<Error>`
+- `Err` type needs to implement `std::error::Error` trait
+
+---
+
+## The `std::error::Error` Trait
+
+```rust
+pub trait Error: Debug + Display {
+    // ...
+}
+```
+
+- generic trait to represent errors
+- useful to provide specific diagnostics
+  - for developers & operators (`Debug`)
+  - for users (`Display`)
+
+---
+
+## Using `std::error::Error`
+
+```rust
+#[derive(Debug)]
+enum MyError {
+    ParseFailed,
+}
+
+impl std::fmt::Display for MyError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            MyError::ParseFailed => "Failed to parse number.",
+        };
+        write!(f, "{}", s)
+    }
+}
+```
+
+---
+
 ## Custom Error Types
 
 ```rust
@@ -235,30 +296,19 @@ fn main() {
 
 ---
 
-## `std::error::Error` trait
-
-```rust
-pub trait Error: Debug + Display {
-    // ...
+<style scoped>
+code.rust {
+    font-size: 20px;
 }
-```
+</style>
 
-- generic trait to display errors
-- useful to provide specific diagnostics
-  - for developers & operators (`Debug`)
-  - for users (`Display`)
-
----
-
-## Using `std::error::Error`
+## Using `From` Conversion
 
 ```rust
 #[derive(Debug)]
 enum MyError {
     ParseFailed,
 }
-
-impl std::error::Error for MyError { /* */ }
 
 impl std::fmt::Display for MyError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -268,15 +318,18 @@ impl std::fmt::Display for MyError {
         write!(f, "{}", s)
     }
 }
+
+fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
+    Ok(input.parse::<i32>().map_err(|_| MyError::ParseFailed)?)
+}
+
+fn main() {
+    let result = parse_number("10");
+    println!("Result is: {:?}", result);
+}
 ```
 
----
 
-## Error conversion
-
----
-
-## Exercise
 
 ---
 
