@@ -42,19 +42,18 @@ marp: true
 * to provide users sufficient information
   * e.g. `400 Bad Request`, required CLI argument missing
 * to provide developers & operators sufficient context
-  * e.g. `503 Sercice Unavailabe`, env var `'XYZ'` unset
-  * useful to aggregate logs / traces
+  * e.g. Postgres unavailable, failed to send email
 
 ---
 
 ## `panic!`
 
-- for unrecoverable error
+- macro for unrecoverable errors
 - or for "should never happen" scenarios
 - exits program
   - unwinds the call stack
   - cleans up data
-- other macros `todo!`, `unimplemented!`, `unreachable!`
+- helper macros `todo!`, `unimplemented!`, `unreachable!`
 
 ---
 
@@ -106,14 +105,14 @@ pub enum Result<T, E> {
 }
 ```
 
-- for recoverable errors
+- enum for recoverable errors
 - `Ok(T)` contains success value
 - `Err(E)` contains error value
 - both `T` & `E` are generic type parameters
 
 ---
 
-## Explicit
+## Explicit Handling
 
 ```rust
 fn main() {
@@ -140,7 +139,7 @@ warning: unused `Result` that must be used
 fn main() {
     let input: Result<i32, ParseIntError> = "10".parse::<i32>();
     match input {
-        Ok(value) => println!("Value is: {}", value),
+        Ok(value) => { /* Success case */ },
         Err(_) => println!("Failed to parse string."),
     }
 }
@@ -177,9 +176,10 @@ fn main() {
 }
 ```
 
-- panics when `Result` is `Err` variant
+- returns success value when `Result` is `Ok`
+- panics when `Result` is `Err`
 - very limited diagnostics
-- useful in some limited capacity, e.g. tests
+- useful in only a few situations, e.g. tests
 
 [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=56d90b0c6c5dbf018d3f4fcaa51543df)
 
@@ -207,7 +207,7 @@ fn main() {
 * Layered error handling is complex, e.g. application vs crate level
 * Rust errors, e.g. `std::io::Error`, `std::num::ParseIntError`
 * Domain & crate errors, e.g. `400 Bad Request`, `sqlx::Error`
-* use error conversion & error chaining
+* Involves error conversion & error chaining
 
 ---
 
@@ -234,8 +234,9 @@ fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
 }
 ```
 
+- `Box<dyn Error>` is opaque
 - `ParseIntError` implements `Error` trait
-- equivalent is `err.into()`
+- `From<ParseIntError>` & `Into<Error>` are equivalent
 
 ---
 
@@ -248,7 +249,8 @@ fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
 ```
 
 - `?` operator applies conversion using `Into<Error>`
-- `Err` type implements `std::error::Error` trait
+- unpacks success value or returns function with `Err` value
+- equivalent version to last slide
 
 [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=973ff56797f9e0149c32e721d2d7a1e3)
 
@@ -284,7 +286,7 @@ enum MyError {
 }
 ```
 
-- an `enum` allows fine granularity
+- an `enum` provides fine granularity
 - each variant can represent one error case
 
 ---
@@ -319,7 +321,7 @@ impl Display for MyParseIntError {
 
 ```rust
 fn parse_number(input: &str) -> Result<i32, MyError> {
-    // TODO parse input, return number or suitable error variant
+    todo!("parse input, return number or suitable error variant")
 }
 
 fn main() {
@@ -330,15 +332,9 @@ fn main() {
 }
 ```
 
-- [implement `parse_number` ▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=c1070dfc7bba26930e866ad67a103ae7)
+- [implement `parse_number` ▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=4e332a5a54ef0d9aced532aff46e4532)
 
 ---
-
-<style scoped>
-code.language-rust {
-    font-size: 22px;
-}
-</style>
 
 ## Using `map_err` 
 
@@ -383,36 +379,38 @@ fn main() {
 }
 ```
 
-- `MyError` implements `From<E>` [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=bfb3df30f5c2c510ec5f702c4aa3f66d)
+- `MyError` implements `From<ParseIntError>` [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=bfb3df30f5c2c510ec5f702c4aa3f66d)
 
 ---
 
 <style scoped>
 code.language-rust {
-    font-size: 18px;
+    font-size: 17px;
 }
 </style>
 
-## Using `From` Exercise
+## Exercise!
 
 ```rust
 #[derive(Debug)]
-enum MyError {
-    ParseFailed,
+pub struct MyParseIntError {
+    pub input: String,
+    pub source: ParseIntError,
 }
 
-impl std::fmt::Display for MyError { /* */ }
+impl Display for MyParseIntError { /* */ }
 
-fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
-    Ok(input.parse::<i32>().map_err(|_| MyError::ParseFailed)?)
+fn parse_number(input: &str) -> Result<i32, MyParseIntError> {
+    todo!()
 }
 
-fn main() {
-    println!("Result is: {:?}", parse_number("10"));
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Result is: {:?}", parse_number("10")?);
+    Ok(())
 }
 ```
 
-- [Run the example & fix it ▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=6b30093ab2af2451d74fec935797623b)
+- [Run the example & fix it ▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=71742584930903ad6c3e4018ab345682)
 
 ---
 
@@ -455,6 +453,12 @@ fn main() {
 
 ---
 
+<style scoped>
+code.language-rust {
+    font-size: 20px;
+}
+</style>
+
 ## Bonus: In iterators
 
 ```rust
@@ -468,6 +472,7 @@ fn main() {
 ```
 
 - iteration immediately halts at first `Err`
+- improves error handling
 
 [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=1acda33948d8118c442d831fd4a59d90)
 
