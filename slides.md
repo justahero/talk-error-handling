@@ -207,7 +207,7 @@ fn main() {
 * Layered error handling is complex, e.g. application vs crate level
 * Rust errors, e.g. `std::io::Error`, `std::num::ParseIntError`
 * Domain & crate errors, e.g. `400 Bad Request`, `sqlx::Error`
-* Involves error conversion & error chaining
+* Often involves error conversion & error chaining
 
 ---
 
