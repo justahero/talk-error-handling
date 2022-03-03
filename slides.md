@@ -26,7 +26,7 @@ marp: true
 
 ---
 
-# Errors
+# Errors in Rust
 
 * recoverable vs unrecoverable
 * must be explicitly handled
