@@ -205,7 +205,7 @@ pub trait Error: Debug + Display {
 
 ---
 
-## Dynamic Error
+## Error Conversion
 
 ```rust
 fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
@@ -218,7 +218,7 @@ fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
 
 ---
 
-## Dynamic Error
+## Error Conversion
 
 ```rust
 fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
@@ -233,7 +233,7 @@ fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
 
 ---
 
-## Dynamic Error
+## Error Conversion
 
 ```rust
 fn parse_from_file(file_path: &str) -> Result<i32, Box<dyn std::error::Error>> {
@@ -252,19 +252,45 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ---
 
-## Custom Error Types
+## Custom Error Types: `enum`
 
 ```rust
 #[derive(Debug)]
 enum MyError {
     ParseFailed,
-    PathNotFound(String),
-    Generic { reason: String }
+    FileNotFound(PathBuf),
+    Generic { reason: String, source: Box<dyn std::error::Error> }
 }
 ```
 
-- allows granularity
-- rule of thumb: each variant represents one error case
+- an `enum` allows fine granularity
+- each variant can represent one error case
+
+---
+
+<style scoped>
+code.language-rust {
+    font-size: 22px;
+}
+</style>
+
+## Custom Error Types: `struct`
+
+```rust
+#[derive(Debug)]
+pub struct MyParseIntError {
+    pub input: String,
+    pub source: ParseIntError,
+}
+
+impl Display for MyParseIntError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "Parse error '{}' with: {}", self.input, self.source)
+    }
+}
+```
+
+- a `struct` or tuple struct also work fine [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=7001658ab6e79b9ce162d656b431db86)
 
 ---
 
@@ -308,9 +334,35 @@ fn main() {
 }
 ```
 
-- maps one `Err` type to another error type
+- maps one `Err` type to another error type [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=4b14efaa5c7544481ba2b0aa0da82cf0)
 
-[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=4b14efaa5c7544481ba2b0aa0da82cf0)
+---
+
+<style scoped>
+code.language-rust {
+    font-size: 20px;
+}
+</style>
+
+## Using `Into<E>`
+
+```rust
+impl From<ParseIntError> for MyError {
+    fn from(_err: ParseIntError) -> Self {
+        MyError::ParseFailed
+    }
+}
+
+fn parse_number(input: &str) -> Result<i32, MyError> {
+    Ok(input.parse::<i32>()?)
+}
+
+fn main() {
+    println!("Result is: {:?}", parse_number("10"));
+}
+```
+
+- `MyError` implements `From<E>` [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=bfb3df30f5c2c510ec5f702c4aa3f66d)
 
 ---
 
