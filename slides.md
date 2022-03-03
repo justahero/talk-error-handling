@@ -49,7 +49,7 @@ marp: true
 
 ## `panic!`
 
-- unrecoverable error
+- for unrecoverable error
 - or for "should never happen" scenarios
 - exits program
   - unwinds the call stack
@@ -77,6 +77,26 @@ fn main() {
 
 ---
 
+## `panic!` backtrace
+
+```shell
+    Finished dev [unoptimized + debuginfo] target(s) in 6.34s
+     Running `target/debug/playground`
+thread 'main' panicked at 'Env var 'DATABASE_URL' is not set.', src/main.rs:4:19
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/9d1b2106e23b1abd32fce1f17267604a5102f57a/library/std/src/panicking.rs:498:5
+   1: core::panicking::panic_fmt
+             at /rustc/9d1b2106e23b1abd32fce1f17267604a5102f57a/library/core/src/panicking.rs:116:14
+   2: playground::main
+             at ./src/main.rs:4:19
+   3: core::ops::function::FnOnce::call_once
+             at /rustc/9d1b2106e23b1abd32fce1f17267604a5102f57a/library/core/src/ops/function.rs:227:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+```
+
+---
+
 ## `Result` Type
 
 ```rust
@@ -86,6 +106,7 @@ pub enum Result<T, E> {
 }
 ```
 
+- for recoverable errors
 - `Ok(T)` contains success value
 - `Err(E)` contains error value
 - both `T` & `E` are generic type parameters
