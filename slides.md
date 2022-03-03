@@ -219,7 +219,7 @@ pub trait Error: Debug + Display {
 }
 ```
 
-- generic trait to represent errors
+- Rust offers generic trait to represent errors
 - useful to provide diagnostics
   - for developers & operators (`Debug`)
   - for users (`Display`)
@@ -230,13 +230,17 @@ pub trait Error: Debug + Display {
 
 ```rust
 fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
-    input.parse::<i32>().map_err(|err| From::from(err))
+    match input.parse::<i32>() {
+        Ok(value) => Ok(value),
+        Err(err) => Err(err.into()),
+    }
 }
 ```
 
-- `Box<dyn Error>` is opaque
-- `ParseIntError` implements `Error` trait
+- [`ParseIntError`](https://doc.rust-lang.org/std/num/struct.ParseIntError.html#impl-Error) implements `Error` trait
 - `From<ParseIntError>` & `Into<Error>` are equivalent
+
+[▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=70fb61bf43a51d6bceb39da50424735d)
 
 ---
 
@@ -250,7 +254,7 @@ fn parse_number(input: &str) -> Result<i32, Box<dyn std::error::Error>> {
 
 - `?` operator applies conversion using `Into<Error>`
 - unpacks success value or returns function with `Err` value
-- equivalent version to last slide
+- equivalent to previous slide
 
 [▶️](https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=973ff56797f9e0149c32e721d2d7a1e3)
 
