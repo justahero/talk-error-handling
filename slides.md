@@ -186,7 +186,7 @@ fn main() {
 * Layered error handling is complex, e.g. application vs crate level
 * Rust errors, e.g. `std::io::Error`, `std::num::ParseIntError`
 * Domain & crate errors, e.g. `400 Bad Request`, `sqlx::Error`
-* Often requires error conversion
+* use error conversion & error chaining
 
 ---
 
@@ -351,7 +351,7 @@ type MyResult<T> = std::result::Result<T, MyError>
 fn load_file(file_path: &str) -> MyResult<String> { /* */ }
 ```
 
-- `io::Result` in Rust (std)
+- for example `io::Result` in Rust (std)
 - can reduce repetition
 
 ---
